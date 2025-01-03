@@ -4,7 +4,7 @@ import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "@/lib/auth/auth-context";
 import { QueryProvider } from "@/lib/providers/query-provider";
 import { ReactNode } from "react";
-
+import { ToastProvider } from "@/components/ui/toast";
 interface ProvidersProps {
   children: ReactNode;
 }
@@ -17,11 +17,11 @@ export function Providers({ children }: ProvidersProps) {
       enableSystem
       disableTransitionOnChange
     >
-      <QueryProvider>
+      <ToastProvider>
         <AuthProvider>
           {children}
         </AuthProvider>
-      </QueryProvider>
+      </ToastProvider>
     </ThemeProvider>
   );
 }
