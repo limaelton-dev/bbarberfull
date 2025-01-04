@@ -34,14 +34,9 @@ export function usePrefetchQuery() {
       data: T,
       options: PrefetchOptions = {}
     ) => {
-      const { staleTime = defaultStaleTime } = options;
-      
-      queryClient.setQueryData(key, data, {
-        updatedAt: Date.now(),
-        staleTime,
-      });
+      queryClient.setQueryData(key, data);
     },
-    [queryClient, defaultStaleTime]
+    [queryClient]
   );
 
   return {

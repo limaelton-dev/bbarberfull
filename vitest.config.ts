@@ -6,15 +6,10 @@ export default defineConfig({
   plugins: [react()],
   test: {
     environment: 'jsdom',
+    globals: true,
     setupFiles: ['./tests/setup.ts'],
-    coverage: {
-      provider: 'v8',
-      reporter: ['text', 'json', 'html'],
-    },
-  },
-  resolve: {
     alias: {
-      '@': path.resolve(__dirname, './'),
-    },
-  },
+      '@': path.resolve(__dirname, './')
+    }
+  }
 })

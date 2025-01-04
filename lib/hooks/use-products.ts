@@ -15,29 +15,27 @@ export function useProducts(barbershopId: string) {
     data: products = [],
     isLoading,
     error,
-  } = useQuery({
+  } = useQuery<Product[]>({
     queryKey,
     queryFn: () => productService.getProducts(barbershopId),
   });
 
-  const createMutation = useMutation({
-    mutationFn: (product: Partial<Product>) => productService.createProduct(product),
+  const createMutation = useMutation<Product, Error, Partial<Product>>({
+    mutationFn: (product) => productService.createProduct(product),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey });
     },
   });
 
-  const updateMutation = useMutation({
-    mutationFn: ({ id, updates }: { id: string; updates: Partial<Product> }) =>
-      productService.updateProduct(id, updates),
+  const updateMutation = useMutation<Product, Error, { id: string; updates: Partial<Product> }>({
+    mutationFn: ({ id, updates }) => productService.updateProduct(id, updates),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey });
     },
   });
 
-  const updateStockMutation = useMutation({
-    mutationFn: ({ id, quantity }: { id: string; quantity: number }) =>
-      productService.updateStock(id, quantity),
+  const updateStockMutation = useMutation<Product, Error, { id: string; quantity: number }>({
+    mutationFn: ({ id, quantity }) => productService.updateStock(id, quantity),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey });
     },

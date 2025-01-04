@@ -15,37 +15,34 @@ export function useServices(barbershopId: string) {
     data: services = [],
     isLoading,
     error,
-  } = useQuery({
+  } = useQuery<Service[]>({
     queryKey,
     queryFn: () => serviceService.getServices(barbershopId),
   });
 
-  const createMutation = useMutation({
-    mutationFn: (service: Partial<Service>) => serviceService.createService(service),
+  const createMutation = useMutation<Service, Error, Partial<Service>>({
+    mutationFn: (service) => serviceService.createService(service),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey });
     },
   });
 
-  const updateMutation = useMutation({
-    mutationFn: ({ id, updates }: { id: string; updates: Partial<Service> }) =>
-      serviceService.updateService(id, updates),
+  const updateMutation = useMutation<Service, Error, { id: string; updates: Partial<Service> }>({
+    mutationFn: ({ id, updates }) => serviceService.updateService(id, updates),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey });
     },
   });
 
-  const assignEmployeeMutation = useMutation({
-    mutationFn: ({ serviceId, employeeId }: { serviceId: string; employeeId: string }) =>
-      serviceService.assignEmployeeToService(serviceId, employeeId),
+  const assignEmployeeMutation = useMutation<void, Error, { serviceId: string; employeeId: string }>({
+    mutationFn: ({ serviceId, employeeId }) => serviceService.assignEmployeeToService(serviceId, employeeId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey });
     },
   });
 
-  const removeEmployeeMutation = useMutation({
-    mutationFn: ({ serviceId, employeeId }: { serviceId: string; employeeId: string }) =>
-      serviceService.removeEmployeeFromService(serviceId, employeeId),
+  const removeEmployeeMutation = useMutation<void, Error, { serviceId: string; employeeId: string }>({
+    mutationFn: ({ serviceId, employeeId }) => serviceService.removeEmployeeFromService(serviceId, employeeId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey });
     },

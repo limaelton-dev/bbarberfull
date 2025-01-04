@@ -13,7 +13,7 @@ export function useBarbershops() {
     data: barbershops = [],
     isLoading,
     error,
-  } = useQuery({
+  } = useQuery<Barbershop[]>({
     queryKey: ['barbershops'],
     queryFn: () => barbershopService.getBarbershops(),
     staleTime: 5 * 60 * 1000, // 5 minutes
@@ -31,7 +31,7 @@ export function useBarbershop(id: string) {
     data: barbershop,
     isLoading,
     error,
-  } = useQuery({
+  } = useQuery<Barbershop>({
     queryKey: ['barbershop', id],
     queryFn: () => barbershopService.getBarbershopById(id),
     staleTime: 5 * 60 * 1000, // 5 minutes

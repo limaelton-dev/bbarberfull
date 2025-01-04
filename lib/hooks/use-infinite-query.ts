@@ -20,13 +20,14 @@ export function useInfiniteList<T>({
 
   const query = useInfiniteQuery({
     queryKey,
-    queryFn: async ({ pageParam = 1 }) => {
-      const items = await queryFn(pageParam, pageSize);
+    queryFn: async ({ pageParam }) => {
+      const items = await queryFn(pageParam as number, pageSize);
       if (items.length < pageSize) {
         setHasNextPage(false);
       }
       return items;
     },
+    initialPageParam: 1,
     getNextPageParam: (_, pages) => (hasNextPage ? pages.length + 1 : undefined),
     enabled,
   });

@@ -61,6 +61,66 @@ export type Database = {
           updated_at?: string
         }
       }
+      products: {
+        Row: {
+          id: string
+          barbershop_id: string
+          name: string
+          description: string | null
+          price: number
+          stock: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          barbershop_id: string
+          name: string
+          description?: string | null
+          price: number
+          stock: number
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          barbershop_id?: string
+          name?: string
+          description?: string | null
+          price?: number
+          stock?: number
+          updated_at?: string
+        }
+      }
+      services: {
+        Row: {
+          id: string
+          barbershop_id: string
+          name: string
+          description: string | null
+          price: number
+          duration: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          barbershop_id: string
+          name: string
+          description?: string | null
+          price: number
+          duration: number
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          barbershop_id?: string
+          name?: string
+          description?: string | null
+          price?: number
+          duration?: number
+          updated_at?: string
+        }
+      }
       // Add other table types as needed...
     }
     Views: {
