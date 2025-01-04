@@ -17,11 +17,13 @@ export function Providers({ children }: ProvidersProps) {
       enableSystem
       disableTransitionOnChange
     >
+      <QueryProvider>
       <ToastProvider>
         <AuthProvider>
           {children}
         </AuthProvider>
       </ToastProvider>
+      </QueryProvider>
     </ThemeProvider>
   );
 }

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { registerSchema } from "@/lib/validations/auth";
 import { useSignUp } from "@/lib/auth/auth-hooks";
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -33,12 +33,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { type ToastProps } from "@/components/ui/toast";
+import { getSupabaseErrorMessage } from '@/lib/utils/supabase-errors';
+import { ValidationService } from "@/lib/services/validation-service";
 
 const formSchema = registerSchema;
+const validationService = new ValidationService();
 
 export function RegisterForm() {
   const [isLoading, setIsLoading] = useState(false);
+  const [isCheckingEmail, setIsCheckingEmail] = useState(false);
   const router = useRouter();
   const signUp = useSignUp();
 
@@ -51,10 +54,28 @@ export function RegisterForm() {
       confirmPassword: "",
       type: "client",
     },
+    mode: "onChange",
   });
 
+  const checkEmailAvailability = async (email: string) => {
+    try {
+      setIsCheckingEmail(true);
+      const isTaken = await validationService.isEmailTaken(email);
+      
+      if (isTaken) {
+        form.setError("email", {
+          type: "manual",
+          message: "Este email já está cadastrado"
+        });
+      }
+    } catch (error) {
+      console.error('Erro ao verificar email:', error);
+    } finally {
+      setIsCheckingEmail(false);
+    }
+  };
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log("Formulário submetido", values);
     try {
       setIsLoading(true);
 
@@ -64,13 +85,10 @@ export function RegisterForm() {
         fullName: values.name,
         type: values.type
       };
-
-      console.log('Tentando cadastrar com:', signUpData);
       
       await signUp(signUpData);
 
-      toast({
-        title: "Conta criada com sucesso!",
+      toast.success("Conta criada com sucesso!", {
         description: "Redirecionando..."
       });
 
@@ -80,10 +98,11 @@ export function RegisterForm() {
         router.push("/search");
       }
     } catch (error) {
-      console.error('Erro durante o cadastro:', error);
-      const errorMessage = error instanceof Error ? error.message : "Erro desconhecido";
-      toast({
-        title: "Erro ao criar conta",
+      const errorMessage = error instanceof Error 
+        ? getSupabaseErrorMessage(error)
+        : "Ocorreu um erro inesperado";
+      
+      toast.error("Erro ao criar conta", {
         description: errorMessage
       });
     } finally {
@@ -149,9 +168,20 @@ export function RegisterForm() {
                       type="email"
                       placeholder="seu@email.com"
                       {...field}
+                      onChange={(e) => {
+                        field.onChange(e);
+                        if (e.target.value && e.target.value.includes('@')) {
+                          checkEmailAvailability(e.target.value);
+                        }
+                      }}
                     />
                   </FormControl>
                   <FormMessage />
+                  {isCheckingEmail && (
+                    <p className="text-sm text-muted-foreground">
+                      Verificando disponibilidade...
+                    </p>
+                  )}
                 </FormItem>
               )}
             />
