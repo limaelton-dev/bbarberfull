@@ -93,7 +93,7 @@ export function RegisterForm() {
       });
 
       if (values.type === "barbershop") {
-        router.push("/dashboard/barbershop/register");
+        router.push("/register/barbershop");
       } else {
         router.push("/search");
       }
